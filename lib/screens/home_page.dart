@@ -53,6 +53,14 @@ class _HomePageState extends State<HomePage> {
         'completed': false,
         'timestamp': FieldValue.serverTimestamp(),
       };
+
+      //docRef gives us the insertion id from the document
+
+      final docRef = await db.collection('tasks').add(newTask);
+      //add the tasks locally
+      setState(() {
+        tasks.add({'id': docRef.id, ...newTask});
+      });
     }
   }
 
@@ -89,7 +97,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
-              child: Container(child: buildAddTaskSection(nameController)),
+              child: Container(
+                child: buildAddTaskSection(nameController, addTask),
+              ),
             ),
           ],
         ),
@@ -100,7 +110,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 //Build the section for adding tasks
-Widget buildAddTaskSection(nameController) {
+Widget buildAddTaskSection(nameController, addTask) {
   return Padding(
     padding: const EdgeInsets.all(12.0),
     child: Row(
@@ -115,7 +125,7 @@ Widget buildAddTaskSection(nameController) {
             ),
           ),
         ),
-        ElevatedButton(onPressed: null, child: Text('Add Task')),
+        ElevatedButton(onPressed: addTask, child: Text('Add Task')),
       ],
     ),
   );
